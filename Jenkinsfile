@@ -1,13 +1,15 @@
 pipeline {
 
     environment {
-        IMAGE_NAME = "alpinehelloworld"
-        IMAGE_TAG = "ajc-2.1"
-        STAGING = "frazer-ajc-staging-env"
-        PRODUCTION = "frazer-ajc-prod-env"
-        USERNAME = "sadofrazer"
-        CONTAINER_NAME = "alpinehelloworld"
-        EC2_PRODUCTION_HOST = "54.88.166.62"
+        IMAGE_NAME = "static-web"
+        IMAGE_TAG = "ajc-1.0"
+        STAGING = "kader-staging-env"
+        PRODUCTION = "kader-prod-env"
+        USERNAME = "abdelkader90"
+        CONTAINER_NAME = "static-web"
+        EC2_PRODUCTION_HOST = "54.209.154.67"
+        EC2_STAGING_HOST = "54.174.97.121"
+
     }
 
     agent none
@@ -30,7 +32,7 @@ pipeline {
                    sh '''
                        docker stop $CONTAINER_NAME || true
                        docker rm $CONTAINER_NAME || true
-                       docker run --name $CONTAINER_NAME -d -e PORT=5000 -p 5000:5000 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
+                       docker run --name $CONTAINER_NAME -d -p 80:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
                        sleep 5
                    '''
                }
@@ -42,7 +44,7 @@ pipeline {
            steps {
                script{
                    sh '''
-                       curl http://localhost:5000 | grep -iq "Hello world!"
+                       curl http://localhost:80 | grep -iq "Dimension"
                    '''
                }
            }
@@ -105,7 +107,6 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy app on EC2-cloud Production') {
             agent any
             when{
