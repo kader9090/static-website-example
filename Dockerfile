@@ -1,2 +1,2 @@
 FROM nginx
-ADD ./*
+ADD . /*
